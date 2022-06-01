@@ -1,0 +1,72 @@
+#include <iostream>
+#include <queue>
+using namespace std;
+
+struct node{
+    int data;
+    struct node *left;
+    struct node *right;
+};
+
+struct node *create(){
+    int x;
+    struct node *head=NULL;
+    struct node *newnode;
+    newnode=(struct node *)malloc(sizeof(struct node));
+    printf("Enter the data value and -1 to discontinue: ");
+    scanf("%d",&x);
+    if(x==-1){
+        return 0;
+    }
+    if(head==NULL){
+        head=newnode;
+    }
+    newnode->data=x;
+    printf("Enter the left child\n");
+    newnode->left=create();
+    printf("Enter the right child\n");
+    newnode->right=create();
+    return head;
+}
+
+void level(struct node *root){
+    if(root==NULL){
+        return;
+    }
+    queue<struct node *>q;
+    q.push(root);
+    while(!q.empty()){
+        struct node *p=q.front();
+        q.pop();
+        cout<<p->data<<" ";
+        if(p->left!=NULL){
+            q.push(p->left);
+        }
+        if(p->right!=NULL){
+            q.push(p->right);
+        }
+    }
+}
+
+struct node* flip_Binary(struct node *root){
+    if(root==NULL){
+        return root;
+    }
+    if(root->left==NULL && root->right==NULL){
+        return root;
+    }
+    struct node *flipped=flip_Binary(root->left);
+    root->left->left=root->right;
+    root->left->right=root;
+    root->left=NULL;
+    root->right=NULL;
+    return flipped;
+}
+
+int main(){
+    struct node *ptr=create();
+    level(ptr);
+    struct node *ptr1=flip_Binary(ptr);
+    level(ptr1);
+    return 0;
+}
